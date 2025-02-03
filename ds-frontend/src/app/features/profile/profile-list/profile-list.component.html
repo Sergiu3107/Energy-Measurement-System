@@ -1,0 +1,23 @@
+<div class="flex-column align-items-center justify-content-center p-3 mx-5 border rounded-2">
+  <table class="table table-hover table-striped">
+    <thead>
+    <tr>
+      <th scope="col">Description</th>
+      <th scope="col">Address</th>
+      <th scope="col">Maximum cost per hour</th>
+      <th scope="col">Stats</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let device of deviceList | filterDevices: searchText">
+      <td>{{ device.description }}</td>
+      <td>{{ device.address }}</td>
+      <td>{{ device.costPerHour }}</td>
+      <td>
+        <button (click)="seeStats(device.id, device.description)" class="btn btn-success bi bi-bar-chart-fill"
+                routerLink="/stats"></button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

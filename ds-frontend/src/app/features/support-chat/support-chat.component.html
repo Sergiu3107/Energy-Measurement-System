@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="col-4">
+    <app-chat-room-list></app-chat-room-list>
+  </div>
+  <!--
+  <div class="py-3 my-4 col-2">
+    <button *ngFor="let user of activeUsers"
+      class="btn btn-outline-dark mb-2 w-100" disabled>
+      {{user.username }}
+    </button>
+  </div>
+  -->
+  <div *ngIf="hasActiveChat" class="col-6">
+    <app-chat-room></app-chat-room>
+  </div>
+</div>

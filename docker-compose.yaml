@@ -1,0 +1,185 @@
+services:
+  postgres-user:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: user-ms-db 
+    ports:
+      - "5432:5432" 
+    networks:
+      net: 
+    volumes:
+      - postgres_data_user:/var/lib/postgresql/data
+  
+  postgres-device:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: device-ms-db 
+    ports:
+      - "5433:5432" 
+    networks:
+      net: 
+    volumes:
+      - postgres_data_device:/var/lib/postgresql/data
+  
+  postgres-monitoring:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: monitoring-ms-db 
+    ports:
+      - "5434:5432" 
+    networks:
+      net: 
+    volumes:
+      - postgres_data_monitoring:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/data
+    networks:
+      net:
+
+  user-ms:
+    build:
+      context: ./UserMicroservice
+    environment:
+      DB_IP: postgres-user  
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: admin
+      DB_DBNAME: user-ms-db
+      PORT: 8081
+    deploy:
+      replicas: 2
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user-ms.rule=Host(`user-ms.localhost`)"
+      - "traefik.http.services.user-ms.loadbalancer.server.port=8081"
+    networks:
+      net:
+    depends_on:
+      - postgres-user
+      - device-ms
+
+  device-ms:
+    build:
+      context: ./DeviceMicroservice
+    environment:
+      DB_IP: postgres-device  
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: admin
+      DB_DBNAME: device-ms-db
+      PORT: 8082
+    deploy:
+      replicas: 2
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.device-ms.rule=Host(`device-ms.localhost`)"
+      - "traefik.http.services.device-ms.loadbalancer.server.port=8082"
+    networks:
+      net:
+    depends_on:
+      - postgres-device
+      - rabbitmq
+  
+  monitoring-ms:
+    build:
+      context: ./MonitoringMicroservice
+    environment:
+      DB_IP: postgres-monitoring  
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: admin
+      DB_DBNAME: monitoring-ms-db
+      PORT: 8083
+    deploy:
+      replicas: 2
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.monitoring-ms.rule=Host(`monitoring-ms.localhost`)"
+      - "traefik.http.services.monitoring-ms.loadbalancer.server.port=8083"
+    networks:
+      net:
+    depends_on:
+      - device-ms
+      - postgres-monitoring
+      - rabbitmq
+
+  chat-ms:
+    build:
+      context: ./ChatMicroservice
+    environment:
+      PORT: 8084
+    deploy:
+      replicas: 2
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chat-ms.rule=Host(`chat-ms.localhost`)"
+      - "traefik.http.services.chat-ms.loadbalancer.server.port=8084"
+    networks:
+      net:
+    depends_on:
+      - user-ms
+  
+  web-app:
+    build: 
+      context: ./ds-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - device-ms
+      - user-ms
+    networks:
+      net:
+  
+  reverse-proxy:
+    image: traefik:v3.2
+    command:
+      - --api.insecure=true
+      - --providers.docker
+      - --accesslog=true
+      - --accesslog.filepath=/var/log/traefik/access.log
+      - --log.level=DEBUG
+      - --entrypoints.web.address=:8085
+      - --entrypoints.dashboard.address=:81
+    ports:
+      - "81:81"
+      - "8085:8085"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - traefik_data:/var/log/traefik
+    networks:
+      net:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`localhost`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=dashboard"
+      - "traefik.http.services.traefik-dashboard.loadbalancer.server.port=8080"
+
+volumes:
+  postgres_data_user:
+  postgres_data_device:
+  postgres_data_monitoring:
+  rabbitmq_data:
+  traefik_data:
+
+networks:
+  net:
+    external: true

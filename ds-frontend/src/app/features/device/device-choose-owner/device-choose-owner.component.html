@@ -1,0 +1,21 @@
+<div class="flex-column align-items-center justify-content-center my-4 me-5 p-3 border rounded-2" >
+  <div class="">
+    <div class="mb-2">
+      <input class="form-control mr-sm-2" type="text" placeholder="search" [(ngModel)]="searchText">
+    </div>
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th>Users</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let user of users | filterUsers: searchText" (click)="onSelectUser(user)"
+          [ngClass]="{'table-primary border border-primary': selectedUserValue === user}">
+        <td class="user-row-context">{{ user.username }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <button (click)="onSubmit()" class="btn btn-primary">Submit</button>
+</div>

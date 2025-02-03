@@ -1,0 +1,33 @@
+<div class="flex-column align-items-center justify-content-center my-4 me-5">
+  <form class="card d-flex flex-column p-3 py-4" [formGroup]="deviceForm">
+    <div class="form-floating m-2">
+      <input class="form-control" id="description" type="text" formControlName="description" [disabled]="!addEnable && !editEnable">
+      <label class="form-label" for="description">Description</label>
+    </div>
+    <div class="form-floating m-2">
+      <input class="form-control" id="address" type="text" formControlName="address" [disabled]="!addEnable && !editEnable">
+      <label class="form-label" for="address">Address</label>
+    </div>
+    <div class="form-floating m-2">
+      <input class="form-control" id="costPerHour" type="text" formControlName="costPerHour" [disabled]="!addEnable && !editEnable">
+      <label class="form-label" for="costPerHour">Cost per hour</label>
+    </div>
+
+    <div *ngIf="!addEnable && !editEnable" class="flex-column flex-row">
+      <button (click)="onSelectModel('edit')" type="button" class="btn btn-success m-2">Edit</button>
+      <button (click)="onSelectModel('add'); clearForm()" type="button" class="btn btn-primary m-2">Add</button>
+    </div>
+
+    <div *ngIf="editEnable && !addEnable" class="flex-column flex-row">
+      <button type="button" class="btn btn-success m-2" (click)="onUpdate()">Update</button>
+      <button type="button" class="btn btn-primary m-2" (click)="clearForm()">Clear</button>
+      <button type="button" class="btn btn-danger m-2" (click)="onCancel()">Cancel</button>
+    </div>
+
+    <div *ngIf="addEnable && !editEnable" class="flex-column flex-row">
+      <button type="button" class="btn btn-success m-2" (click)="onSave()">Save</button>
+      <button type="button" class="btn btn-primary m-2" (click)="clearForm()">Clear</button>
+      <button type="button" class="btn btn-danger m-2" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</div>

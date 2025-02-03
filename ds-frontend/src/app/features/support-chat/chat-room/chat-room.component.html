@@ -1,0 +1,40 @@
+<div class="flex-column align-items-center justify-content-center p-3 m-4">
+  <div>
+    <div class="card" id="chat">
+      <div class="card-header p-3 bg-dark">
+        <h5 class="mb-0 text-white">Room {{ chatId }}</h5>
+
+        <!-- Use async pipe to automatically update the typing users string -->
+        <div class="d-flex text-white" *ngIf="typingUsers.length > 0">
+          <div>{{ typingUsersString }} is typing...</div>
+        </div>
+
+        <!-- Display a placeholder when no one is typing -->
+        <div class="d-flex text-white" *ngIf="typingUsers.length === 0">
+          <div> ⠀ </div>
+        </div>
+      </div>
+      <div class="card-body bg-white" data-mdb-perfect-scrollbar-init style="position: relative; height: 400px">
+        <div class="d-flex flex-row justify-content-start h-100" style="overflow-y: scroll !important;">
+          <div style="word-wrap: break-word; max-width: 75%;">
+            <!-- Display messages -->
+            <div *ngFor="let message of messages">
+              <span class="fw-bold" [ngStyle]="{'color': message.sender.color}">
+                {{ message.sender.username }}:
+              </span>
+              {{ message.content }}
+              <p [ngStyle]="{'color': message.type === Status.SEEN ? 'green' : 'black'}">
+            </div>
+          </div>
+        </div>
+      </div>
+      <form [formGroup]="form" class="card-footer text-muted d-flex justify-content-start align-items-center p-3 bg-dark">
+        <input type="text" class="form-control form-control-lg" id="message"
+               placeholder="Type message" formControlName="message"
+               (keyup.enter)="onEnter()"
+               (keyup)="onTyping()"
+                (focus)="onFocus()">
+      </form>
+    </div>
+  </div>
+</div>

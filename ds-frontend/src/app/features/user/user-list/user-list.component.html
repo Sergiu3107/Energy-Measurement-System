@@ -1,0 +1,27 @@
+<div class="flex-column align-items-center justify-content-center p-3 my-4 ms-5 border rounded-2">
+  <table class="table table-hover table-striped">
+    <thead>
+    <tr>
+      <th><input type="checkbox" [checked]="isAllSelected" (change)="onSelectAllCheckboxes(userList, $event)"/></th>
+      <th scope="col">Username</th>
+      <th scope="col">Email</th>
+      <th scope="col">Role</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr (click)="onSelectUserSpecs(user)" *ngFor="let user of userList | filterUsers: searchText"
+      [ngClass]="{'device-row-selected': selectedUserValue === user }">
+      <td><input type="checkbox" [checked]="isSelectedCheckbox(user)"
+                 (change)="onSelectCheckbox(userList, user, $event)"/></td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.role }}</td>
+      <td>{{ user.firstName }}</td>
+      <td>{{ user.lastName }}</td>
+    </tr>
+    </tbody>
+  </table>
+  <button class="btn btn-danger" (click)="onRemove()">Remove</button>
+</div>

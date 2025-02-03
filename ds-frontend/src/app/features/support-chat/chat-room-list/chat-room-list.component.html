@@ -1,0 +1,6 @@
+<div class="flex-column align-items-center justify-content-center p-3 m-4">
+  <button *ngFor="let room of rooms; let i = index"
+        class="btn btn-dark my-1 py-3 w-75 w-100" type="button" (click)="openRoom(i)">
+    Room {{ i+1 }}
+  </button>
+</div>

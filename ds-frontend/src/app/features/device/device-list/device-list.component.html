@@ -1,0 +1,30 @@
+<div class="flex-column align-items-center justify-content-center p-3 my-4 ms-5 border rounded-2">
+  <table class="table table-hover table-striped">
+    <thead>
+    <tr>
+      <th><input type="checkbox" [checked]="isAllSelected" (change)="onSelectAllCheckboxes(deviceList, $event)"/></th>
+      <th scope="col">Description</th>
+      <th scope="col">Address</th>
+      <th scope="col">Maximum cost per hour</th>
+      <th scope="col">Owner</th>
+      <th scope="col">Stats</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr (click)="onSelectDeviceSpecs(device)" *ngFor="let device of deviceList | filterDevices: searchText"
+      [ngClass]="{'device-row-selected': selectedDeviceValue === device }">
+      <td><input type="checkbox" [checked]="isSelectedCheckbox(device)"
+                 (change)="onSelectCheckbox(deviceList, device, $event)"/></td>
+      <td>{{ device.description }}</td>
+      <td>{{ device.address }}</td>
+      <td>{{ device.costPerHour }}</td>
+      <td>
+        <div [ngClass]="device.user.id == null ? 'text-danger' : ''">{{ device.user.id == null ? "UNOWNED" : getDeviceOwner(device.user.id)?.username }}
+        </div>
+      </td>
+      <td><button (click)="seeStats(device.id, device.description)" class="btn btn-success bi bi-bar-chart-fill" routerLink="/stats"></button></td>
+    </tr>
+    </tbody>
+  </table>
+  <button class="btn btn-danger" (click)="onRemove()">Remove</button>
+</div>

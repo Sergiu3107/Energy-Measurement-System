@@ -1,0 +1,18 @@
+<div class="row vh-100" id="main-device">
+  <div class="col-md-8">
+    <div class="my-4 ms-5 w-25">
+      <input class="form-control mr-sm-2" type="text" placeholder="search" [(ngModel)]="searchText">
+    </div>
+    <app-device-list
+      [searchText]="searchText"
+      [deviceList]="devices"></app-device-list>
+  </div>
+  <div class="col-md-4">
+    <div class="mt-4">
+      <button (click)="onManageDevice()" class="btn btn-primary me-3">Manage device</button>
+      <button (click)="onManageOwner()" class="btn btn-primary">Manage owner</button>
+    </div>
+    <app-device-specs *ngIf="displayManageDevice"></app-device-specs>
+    <app-device-choose-owner *ngIf="displayManageOwner"></app-device-choose-owner>
+  </div>
+</div>

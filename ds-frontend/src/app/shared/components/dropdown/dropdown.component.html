@@ -1,0 +1,11 @@
+<div ngbDropdown class="mx-2">
+  <button ngbDropdownToggle class="btn btn-outline-light" type="button" id="dropdown">
+    {{ placeholder }}
+  </button>
+  <div ngbDropdownMenu aria-labelledby="dropdown">
+    <button *ngFor="let option of options"
+            [routerLink]="option.path"
+            ngbDropdownItem>{{ option.label }}
+    </button>
+  </div>
+</div>

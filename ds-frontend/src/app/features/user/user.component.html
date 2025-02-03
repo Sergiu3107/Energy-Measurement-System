@@ -1,0 +1,14 @@
+<div class="row vh-100" id="main-user">
+  <div class="col-md-8">
+    <div class="my-4 ms-5 w-25">
+      <input class="form-control mr-sm-2" type="text" placeholder="search" [(ngModel)]="searchText">
+    </div>
+    <app-user-list
+      [searchText]="searchText"
+      [userList]="users"></app-user-list>
+  </div>
+  <div class="col-md-4">
+    <div class="mt-4 btn">‎</div>
+    <app-user-specs></app-user-specs>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<nav
+  *ngIf="user$ | async as user"
+  class="d-flex justify-content-end bg-dark p-3 border-bottom border-dark border-3 border-opacity-25">
+  <div class="d-flex align-items-center">
+    <app-dropdown
+      *ngIf="user.role === 'ADMIN'"
+      [placeholder]="placeholder"
+      [value]="currentOption"
+      [options]="options"
+    ></app-dropdown>
+    <div *ngIf="user.role === 'ADMIN'"
+         class="mx-2 bg-success text-light px-2 py-1 rounded-1 fs-6">{{ user.role | uppercase }}
+    </div>
+    <a class="mx-2 fw-light text-decoration-none text-white" routerLink="/support" > Support </a>
+    <a class="mx-2 fw-medium text-decoration-none text-white" routerLink="/profile" >{{ user.username }}</a>
+    <div class="vr mx-2"></div>
+    <button class="btn btn-outline-danger mx-2" (click)="onDisconnect()">Disconnect</button>
+  </div>
+</nav>
